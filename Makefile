@@ -3,7 +3,7 @@ all: bchunk
 # For systems with GCC (Linux, and others with GCC installed):
 CC = gcc
 LD = gcc
-CFLAGS = -Wall -Wstrict-prototypes -O2
+CFLAGS = -Wall -Wextra -Wstrict-prototypes -O2
 
 # For systems with a legacy CC:
 #CC = cc

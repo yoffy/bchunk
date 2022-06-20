@@ -46,6 +46,7 @@
 
 #define CUELLEN 1024
 #define SECTLEN 2352
+#define VBUF_SIZE 16*1024*1024
 
 #define WAV_RIFF_HLEN 12
 #define WAV_FORMAT_HLEN 24
@@ -94,6 +95,7 @@ struct track_t {
 char *basefile = NULL;
 char *binfile = NULL;
 char *cuefile = NULL;
+char *vbuf = NULL;
 int verbose = 0;
 int psxtruncate = 0;
 int raw = 0;
@@ -286,6 +288,11 @@ int writetrack(FILE *bf, struct track_t *track, char *bname)
 	if (!(f = fopen(fname, "wb"))) {
 		fprintf(stderr, " Could not fopen track file: %s\n", strerror(errno));
 		exit(4);
+	}
+
+	if (!(setvbuf(f, vbuf, _IOFBF, VBUF_SIZE))) {
+		fprintf(stderr, " Could not set buffer: %s\n", strerror(errno));
+		// continue
 	}
 	
 	if (fseek(bf, track->start, SEEK_SET)) {
@@ -493,6 +500,7 @@ int main(int argc, char **argv)
 	
 	
 	printf("Writing tracks:\n\n");
+	vbuf = (char *)malloc(VBUF_SIZE);
 	for (track = tracks; (track); track = track->next)
 		writetrack(binf, track, basefile);
 		
